@@ -92,6 +92,9 @@ export default function Home() {
           <p className="text-xs text-stone-500">Plan your whole weekend in one chat · 11–13 Apr 2025</p>
         </div>
       </header>
+      <p className="border-b border-amber-200 bg-amber-50 px-5 py-2 text-xs font-medium text-amber-900">
+        Prototype with sample trips only. Nothing is booked and no payment is taken.
+      </p>
 
       <main className="flex-1 space-y-4 overflow-y-auto px-4 py-6">
         {messages.length === 0 && (

@@ -1,61 +1,79 @@
-# Kyoto Trip Planner — chat prototype
+**Live prototype: https://kyoto-trip-planner-ashen.vercel.app/**
+**Try the failure path: https://kyoto-trip-planner-ashen.vercel.app/?fail=once**
 
-A clickable prototype for Airbnb's Kyoto trip-planner chat, built for Thursday's guest test.
-A guest types one Kyoto trip request, a thinking animation plays, and three itinerary cards appear: **Stay**, **Experience** and **Food spot**. No login needed.
+# Kyoto Trip Planner: chat prototype
 
-![Three cards](docs/3-cards.png)
+A clickable prototype of Airbnb's Kyoto trip-planner chat, built for the moderated guest sessions. A guest types one Kyoto trip request, a thinking animation plays, and three itinerary cards appear: **Stay**, **Experience** and **Food spot**. There's no login, no install and no setup.
 
-## What it does
+## Message for the team (#search-trip-planner)
 
-1. **Chat page:** a header, a scrolling thread and a text box with a Send button.
-2. **Locks while thinking:** after you press Send, the text box and button lock and three pulsing dots show in the reply bubble before any cards appear. While the dots are going, the box is greyed out and reads "Planning your trip…", so a second request can't be sent: pressing Enter or Send does nothing. When the cards arrive, the box unlocks.
-3. **Mock reply from the workbook:** three rows from `kyoto_weekend_content.xlsx` (see `lib/mockResponse.ts`):
-   | Card | Row | Pick | Cost for 2 |
-   |---|---|---|---|
-   | Stay | S1 | Restored machiya townhouse near Gion, 11–13 Apr 2025 | $366 |
-   | Experience | E1 | Tea ceremony in a 100-year-old machiya, Sat 12 Apr 10:30 | $116 |
-   | Food | F1 | Menya Inoichi (ramen, Gion, 8 min walk) | $34 |
-   | **Total** | | | **$516 of $600 budget** |
+> Hi Hannah, Tomás, Priya and Daniel, the Kyoto trip-planner prototype is live for Thursday's dry run (13 March) and the guest sessions on 1 April: https://kyoto-trip-planner-ashen.vercel.app/
+>
+> **Happy path:** type "Plan a weekend in Kyoto for two" and press Send. You'll see thinking dots, then the Stay, Experience and Food cards.
+>
+> **Failure path:** open https://kyoto-trip-planner-ashen.vercel.app/?fail=once and send the same request. A friendly message with Try again appears, and Try again brings the three cards back. No code edits needed.
+>
+> No login or install. Sample trips only, so nothing is booked.
 
-   Skipped on purpose: E3 (sold out), E4 (no host listed), F4 (pushes the weekend over budget).
-   Photos are grey placeholders because image rights for the prototype are not cleared.
-4. **Three separate cards, each with its own layout** (one component each in `components/`):
-   | Card | Image box | Biggest text | Accent |
-   |---|---|---|---|
-   | Stay | Wide banner, top | Travel dates | Coral top border |
-   | Experience | Tall strip, left | Activity name | Purple day label |
-   | Food spot | Round thumbnail, top right | Restaurant name | Amber meal/price label |
-5. **Never a blank chat:** if the reply comes back empty or broken, the guest sees a friendly error bubble with **Try again**, which brings the three cards back.
+## Session checklist
 
-## Try the error state
+Checked against *Moderated Session Prototype Requirements: Trip-Planner Chat*, on the production link, in a fresh private window with nothing logged in.
 
-Add `?fail=once` to the address (e.g. `http://localhost:3000/?fail=once`) and send "Plan a weekend in Kyoto for two".
+| Check | Phone (390px, private window) | Laptop (1440px, incognito) |
+|---|---|---|
+| Opens with no install, no login and no configuration | ✅ | ✅ |
+| One typed request shows a thinking state first | ✅ | ✅ |
+| **3 of 3 cards** appear: Stay, Experience, Food | ✅ | ✅ |
+| The three cards look clearly different (own layout each, not swapped text) | ✅ | ✅ |
+| Nothing cut off, no sideways scrolling at phone width | ✅ | ✅ |
+| Forced failure shows a friendly message and Try again **inside** the assistant bubble | ✅ | ✅ |
+| **0 blank-chat moments**: at the failure, when Try again is pressed (thinking dots show) and after it | ✅ | ✅ |
+| Try again brings the three cards back | ✅ | ✅ |
+| **Mocked data note** visible: "Prototype with sample trips only. Nothing is booked and no payment is taken." | ✅ | ✅ |
+| Shared link is the production `*.vercel.app` domain, not a protected preview link | ✅ | ✅ |
 
-**Step 1: Send.** The box locks and the thinking dots play.
+### Phone (390px)
 
-![Thinking dots](docs/1-thinking.png)
+| Three cards | Failure with Try again | Cards after Try again |
+|---|---|---|
+| ![Phone: three cards](docs/phone-1-cards.png) | ![Phone: error bubble](docs/phone-2-error.png) | ![Phone: cards after retry](docs/phone-3-after-retry.png) |
 
-**Step 2: The first reply fails on purpose.** It comes back empty, so the thinking bubble turns into a friendly message bubble: *"I couldn't put your Kyoto weekend together. Tap Try again and I'll plan it again."* with one **Try again** button inside it. The thread is never blank.
+### Laptop (1440px)
 
-The bubble follows the Airbnb *Assistant Bubble Error Message Guidelines*:
-- **Wording:** a 7-word lead line in the guest's terms, one sentence saying what happens next, no blame, no exclamation marks, and none of the banned words (error, failed, invalid, status codes…).
-- **Button:** exactly one, "Try again" in sentence case, inside the bubble directly below the message, using the chat's primary button style. No pop-ups or alerts.
-- **Look:** same shape and left alignment as a normal assistant reply, white with a thin grey border, dark grey text, no red anywhere.
-- **Accessibility:** `aria-live="polite"` on the reply container (it's on the page from the thinking dots onward), a visible keyboard focus ring, and a 44px-tall button.
+![Laptop: three cards](docs/laptop-1-cards.png)
+![Laptop: error bubble](docs/laptop-2-error.png)
+![Laptop: cards after retry](docs/laptop-3-after-retry.png)
 
-![Error bubble with Try again](docs/2-error.png)
+## How to fire the failure
 
-**Step 3: Tap Try again.** The same request is sent again, the dots play, and the Stay, Experience and Food cards appear.
+Add `?fail=once` to the end of the link, then send "Plan a weekend in Kyoto for two". The first reply comes back empty on purpose, so the chat shows the friendly message with **Try again**. Every request after that works normally, so Try again brings the three cards back. Nothing in the code needs to change.
 
-![Cards after Try again](docs/4-after-retry.png)
+## What's inside
 
-Checked by running it in a browser at `/?fail=once`:
+- **Thinking state:** after Send, the text box and button lock ("Planning your trip…") and three pulsing dots show in the reply bubble. A second request can't be sent until the cards arrive.
 
-| Moment | Error bubble | Try again button | Cards | Box locked |
-|---|---|---|---|---|
-| After the first Send | Yes | Yes | 0 | No |
-| Just after tapping Try again | No | No | 0 | Yes (dots playing) |
-| When the retry finishes | No | No | 3 | No |
+  ![Thinking dots](docs/1-thinking.png)
+
+- **Mock reply from the workbook:** three rows from `kyoto_weekend_content.xlsx` (see `lib/mockResponse.ts`):
+
+  | Card | Row | Pick | Cost for 2 |
+  |---|---|---|---|
+  | Stay | S1 | Restored machiya townhouse near Gion, 11–13 Apr 2025 | $366 |
+  | Experience | E1 | Tea ceremony in a 100-year-old machiya, Sat 12 Apr 10:30 | $116 |
+  | Food | F1 | Menya Inoichi (ramen, Gion, 8 min walk) | $34 |
+  | **Total** | | | **$516 of $600 budget** |
+
+  Skipped on purpose: E3 (sold out), E4 (no host listed), F4 (pushes the weekend over budget). Photos are grey placeholders because image rights for the prototype are not cleared.
+
+- **Three separate card components** in `components/`, each with its own layout:
+
+  | Card | Image box | Biggest text | Accent |
+  |---|---|---|---|
+  | Stay | Wide banner, top | Travel dates | Coral top border |
+  | Experience | Tall strip, left | Activity name | Purple day label |
+  | Food spot | Round thumbnail, top right | Restaurant name | Amber meal/price label |
+
+- **Failure bubble** follows Airbnb's *Assistant Bubble Error Message Guidelines*: a 7-word lead line in the guest's terms ("I couldn't put your Kyoto weekend together.") plus one sentence saying what happens next. There's one sentence-case **Try again** button inside the bubble, it uses the same shape as a normal reply, it uses no red, the container has `aria-live="polite"`, it shows a keyboard focus ring, and the button is 44px tall.
 
 ## Run it locally
 
@@ -63,8 +81,8 @@ Checked by running it in a browser at `/?fail=once`:
 npm install
 npm run dev
 ```
-Then open http://localhost:3000.
+Then open http://localhost:3000 (or http://localhost:3000/?fail=once).
 
 ## Built with
 
-TypeScript · Next.js (App Router) · React 19 · Tailwind CSS · built with Claude Code.
+TypeScript · Next.js (App Router) · React 19 · Tailwind CSS · deployed on Vercel · built with Claude Code.
