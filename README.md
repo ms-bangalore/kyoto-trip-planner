@@ -29,11 +29,27 @@ A guest types one Kyoto trip request, a thinking animation plays, and three itin
 
 ## Try the error state
 
-Add `?fail=once` to the address. The first request returns an empty reply, so the error bubble appears. Tap **Try again** and the three cards appear.
+Add `?fail=once` to the address (e.g. `http://localhost:3000/?fail=once`) and send "Plan a weekend in Kyoto for two".
 
-| Thinking | Error | Cards after Try again |
-|---|---|---|
-| ![Thinking](docs/1-thinking.png) | ![Error](docs/2-error.png) | ![Cards](docs/3-cards.png) |
+**Step 1: Send.** The box locks and the thinking dots play.
+
+![Thinking dots](docs/1-thinking.png)
+
+**Step 2: The first reply fails on purpose.** It comes back empty, so the thinking bubble turns into a friendly error bubble with a **Try again** button. The thread is never blank.
+
+![Error bubble with Try again](docs/2-error.png)
+
+**Step 3: Tap Try again.** The same request is sent again, the dots play, and the Stay, Experience and Food cards appear.
+
+![Cards after Try again](docs/4-after-retry.png)
+
+Checked by running it in a browser at `/?fail=once`:
+
+| Moment | Error bubble | Try again button | Cards | Box locked |
+|---|---|---|---|---|
+| After the first Send | Yes | Yes | 0 | No |
+| Just after tapping Try again | No | No | 0 | Yes (dots playing) |
+| When the retry finishes | No | No | 3 | No |
 
 ## Run it locally
 
