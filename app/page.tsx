@@ -16,6 +16,13 @@ type Message =
 
 let nextId = 1;
 
+// Shared look for every assistant reply bubble (normal or failed): same shape, left aligned.
+const BUBBLE =
+  "self-start max-w-[80%] rounded-2xl rounded-bl-sm border border-gray-200 bg-white px-4 py-3 shadow-sm";
+// The chat's primary button style (same as Send).
+const PRIMARY_BUTTON =
+  "rounded-full bg-stone-900 text-sm font-semibold text-white outline-none disabled:opacity-40";
+
 function tripTotal(cards: TripCard[]) {
   return cards.reduce((sum, c) => {
     if (c.cardType === "stay") return sum + c.details.totalUsd;
@@ -104,24 +111,29 @@ export default function Home() {
               </div>
             );
           }
+          // Every assistant reply sits in the same live-region wrapper (same key from
+          // "thinking" to error/cards), so screen readers hear the message when it appears.
           if (msg.kind === "thinking") {
             return (
-              <div key={msg.id} className="inline-block rounded-2xl rounded-bl-sm bg-white px-4 py-3 shadow-sm">
-                <ThinkingDots />
+              <div key={msg.id} aria-live="polite" className="flex flex-col">
+                <div className={BUBBLE}>
+                  <ThinkingDots />
+                </div>
               </div>
             );
           }
           if (msg.kind === "error") {
+            // Follows the Assistant Bubble Error Message Guidelines: guest's terms, lead line
+            // of 8 words or fewer, one sentence saying what happens next, no red, one button.
             return (
-              <div key={msg.id} className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white p-4 shadow-sm">
-                <p className="text-sm">
-                  Sorry, I couldn&apos;t put your Kyoto weekend together just now. Let&apos;s give it another go.
-                </p>
-                <div className="mt-3 flex justify-end">
+              <div key={msg.id} aria-live="polite" className="flex flex-col">
+                <div className={BUBBLE}>
+                  <p className="font-medium text-gray-800">I couldn&apos;t put your Kyoto weekend together.</p>
+                  <p className="mt-1 text-sm text-gray-800">Tap Try again and I&apos;ll plan it again.</p>
                   <button
                     onClick={() => retry(msg.id, msg.request)}
                     disabled={busy}
-                    className="rounded-full bg-[#FF385C] px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className={`${PRIMARY_BUTTON} mt-3 self-start min-h-[44px] px-4 py-2.5 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2`}
                   >
                     Try again
                   </button>
@@ -131,7 +143,7 @@ export default function Home() {
           }
           const total = tripTotal(msg.cards);
           return (
-            <div key={msg.id} className="space-y-3">
+            <div key={msg.id} aria-live="polite" className="space-y-3">
               <p className="text-sm text-stone-600">
                 Here&apos;s your Kyoto weekend for two: ${total} of your ${BUDGET_USD} budget.
               </p>
@@ -161,7 +173,7 @@ export default function Home() {
         <button
           type="submit"
           disabled={busy || !input.trim()}
-          className="rounded-full bg-stone-900 px-5 text-sm font-semibold text-white disabled:opacity-40"
+          className={`${PRIMARY_BUTTON} px-5 focus-visible:ring-2 focus-visible:ring-gray-900 focus-visible:ring-offset-2`}
         >
           Send
         </button>

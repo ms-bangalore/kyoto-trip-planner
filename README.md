@@ -35,7 +35,13 @@ Add `?fail=once` to the address (e.g. `http://localhost:3000/?fail=once`) and se
 
 ![Thinking dots](docs/1-thinking.png)
 
-**Step 2: The first reply fails on purpose.** It comes back empty, so the thinking bubble turns into a friendly error bubble with a **Try again** button. The thread is never blank.
+**Step 2: The first reply fails on purpose.** It comes back empty, so the thinking bubble turns into a friendly message bubble: *"I couldn't put your Kyoto weekend together. Tap Try again and I'll plan it again."* with one **Try again** button inside it. The thread is never blank.
+
+The bubble follows the Airbnb *Assistant Bubble Error Message Guidelines*:
+- **Wording:** a 7-word lead line in the guest's terms, one sentence saying what happens next, no blame, no exclamation marks, and none of the banned words (error, failed, invalid, status codes…).
+- **Button:** exactly one, "Try again" in sentence case, inside the bubble directly below the message, using the chat's primary button style. No pop-ups or alerts.
+- **Look:** same shape and left alignment as a normal assistant reply, white with a thin grey border, dark grey text, no red anywhere.
+- **Accessibility:** `aria-live="polite"` on the reply container (it's on the page from the thinking dots onward), a visible keyboard focus ring, and a 44px-tall button.
 
 ![Error bubble with Try again](docs/2-error.png)
 
