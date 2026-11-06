@@ -8,7 +8,7 @@ A guest types one Kyoto trip request, a thinking animation plays, and three itin
 ## What it does
 
 1. **Chat page:** a header, a scrolling thread and a text box with a Send button.
-2. **Locks while thinking:** after you press Send, the text box and button lock and three pulsing dots show in the reply bubble before any cards appear.
+2. **Locks while thinking:** after you press Send, the text box and button lock and three pulsing dots show in the reply bubble before any cards appear. While the dots are going, the box is greyed out and reads "Planning your trip…", so a second request can't be sent: pressing Enter or Send does nothing. When the cards arrive, the box unlocks.
 3. **Mock reply from the workbook:** three rows from `kyoto_weekend_content.xlsx` (see `lib/mockResponse.ts`):
    | Card | Row | Pick | Cost for 2 |
    |---|---|---|---|
